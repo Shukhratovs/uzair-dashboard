@@ -92,8 +92,8 @@ export async function GET(req: Request) {
       });
       const transitCount = transitVariants.length;
 
-      // Only count direct flights. If no direct flights exist, skip this route entirely.
-      const count = directCount;
+      // Direct flights take priority. If none, fall back to transit count.
+      const count = directCount > 0 ? directCount : transitCount;
 
       if (count === 0) continue;
 
@@ -148,6 +148,6 @@ export async function GET(req: Request) {
     total,
     routes,
     note:
-      "Reyslar soni = direct count (segments=1) only. Routes with no direct flights are excluded. Transit variants are de-duplicated by itinerary signature.",
+      "Reyslar soni = directCount if direct flights exist, else transitCount. Transit hub shown when route is transit-only. Variants de-duplicated by itinerary signature.",
   });
 }

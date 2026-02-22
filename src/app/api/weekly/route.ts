@@ -120,12 +120,16 @@ export async function GET(req: Request) {
         try {
           const data = await fetchFlights({ from, to, date: day, flightClass });
           const variants = Array.isArray(data?.variants) ? data.variants : [];
-          // Only count direct flights (single segment per leg)
           const directVariants = variants.filter((v: any) => {
             const segs = v?.legs?.[0]?.segments;
             return Array.isArray(segs) && segs.length === 1;
           });
-          const count = directVariants.length;
+          const transitVariantsWeekly = variants.filter((v: any) => {
+            const segs = v?.legs?.[0]?.segments;
+            return Array.isArray(segs) && segs.length >= 2;
+          });
+          // Direct flights take priority. If none, fall back to transit count.
+          const count = directVariants.length > 0 ? directVariants.length : transitVariantsWeekly.length;
 
           if (count > 0) {
             routes[key] = (routes[key] || 0) + count;
