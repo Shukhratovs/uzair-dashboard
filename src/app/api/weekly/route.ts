@@ -128,8 +128,22 @@ export async function GET(req: Request) {
             const segs = v?.legs?.[0]?.segments;
             return Array.isArray(segs) && segs.length >= 2;
           });
-          // Direct flights take priority. If none, fall back to transit count.
-          const count = directVariants.length > 0 ? directVariants.length : transitVariantsWeekly.length;
+
+          // If transit-only, check that the top hub is a domestic UZ airport (skip international hubs)
+          const UZ_DOMESTIC_W = new Set(["TAS","SKD","BHK","AZN","FEG","NMA","UGC","TMJ","KSQ","NVI","NCU"]);
+          let useTransit = transitVariantsWeekly.length > 0;
+          if (directVariants.length === 0 && useTransit) {
+            const hubCounts: Record<string, number> = {};
+            for (const v of transitVariantsWeekly) {
+              const hub = v?.legs?.[0]?.segments?.[0]?.arrival_airport;
+              if (hub) hubCounts[hub] = (hubCounts[hub] || 0) + 1;
+            }
+            const topHub = Object.entries(hubCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+            if (topHub && !UZ_DOMESTIC_W.has(topHub)) useTransit = false;
+          }
+
+          // Direct flights take priority. If none, fall back to transit count (domestic hubs only).
+          const count = directVariants.length > 0 ? directVariants.length : (useTransit ? transitVariantsWeekly.length : 0);
 
           if (count > 0) {
             routes[key] = (routes[key] || 0) + count;

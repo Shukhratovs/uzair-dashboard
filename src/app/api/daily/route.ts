@@ -120,6 +120,10 @@ export async function GET(req: Request) {
         }
       }
 
+      // Skip transit-only routes that connect through an international (non-UZ) airport
+      const UZ_DOMESTIC = new Set(["TAS","SKD","BHK","AZN","FEG","NMA","UGC","TMJ","KSQ","NVI","NCU"]);
+      if (directCount === 0 && transitHubCode && !UZ_DOMESTIC.has(transitHubCode)) continue;
+
       routes.push({
         from,
         to,
