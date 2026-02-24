@@ -11,6 +11,9 @@ type DailyRow = {
   transitHubCode?: string;
   transitHubName?: string;
   transitCount?: number;
+  aircraftCodes?: string[];
+  seatsAvailable?: number;
+  aircraftLabel?: string;
 };
 
 type DailyResponse = {
@@ -254,7 +257,9 @@ function DayCard({ dayData }: { dayData: DailyResponse }) {
               <th className="border-b border-neutral-200 py-2 pr-3">Yo'nalish</th>
               <th className="border-b border-neutral-200 py-2 pr-3">Reyslar soni</th>
               <th className="border-b border-neutral-200 py-2 pr-3">Tranzit hududi</th>
-              <th className="border-b border-neutral-200 py-2">Tranzit soni</th>
+              <th className="border-b border-neutral-200 py-2 pr-3">Tranzit soni</th>
+              <th className="border-b border-neutral-200 py-2 pr-3">Samolyot</th>
+              <th className="border-b border-neutral-200 py-2">Mavjud o'rindiq</th>
             </tr>
           </thead>
           <tbody>
@@ -263,7 +268,9 @@ function DayCard({ dayData }: { dayData: DailyResponse }) {
                 <td className="border-b border-neutral-100 py-2 pr-3">{`${r.fromName}-${r.toName}`}</td>
                 <td className="border-b border-neutral-100 py-2 pr-3">{r.count}</td>
                 <td className="border-b border-neutral-100 py-2 pr-3">{r.transitHubName ?? ""}</td>
-                <td className="border-b border-neutral-100 py-2">{r.transitCount ?? ""}</td>
+                <td className="border-b border-neutral-100 py-2 pr-3">{r.transitCount ?? ""}</td>
+                <td className="border-b border-neutral-100 py-2 pr-3 text-xs">{r.aircraftLabel ?? ""}</td>
+                <td className="border-b border-neutral-100 py-2 text-center">{r.seatsAvailable ?? ""}</td>
               </tr>
             ))}
             {dayData.routes.length === 0 && (

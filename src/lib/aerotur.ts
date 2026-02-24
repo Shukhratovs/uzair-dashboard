@@ -11,6 +11,42 @@ export type DailyRouteRow = {
   transitHubCode?: string;
   transitHubName?: string;
   transitCount?: number;
+  // Aircraft info
+  aircraftCodes?: string[];   // IATA aircraft type codes e.g. ["320"]
+  seatsAvailable?: number;    // sum of remaining bookable seats across flights
+  aircraftLabel?: string;     // human-readable e.g. "Airbus A320 (~150 o'rindiq)"
+};
+
+// IATA aircraft type code → full display name
+export const AIRCRAFT_NAME_MAP: Record<string, string> = {
+  "320": "Airbus A320",
+  "321": "Airbus A321",
+  "32A": "Airbus A320",
+  "32B": "Airbus A321",
+  "32N": "Airbus A320neo",
+  "32Q": "Airbus A321neo",
+  "763": "Boeing 767-300",
+  "764": "Boeing 767-400",
+  "788": "Boeing 787-8",
+  "789": "Boeing 787-9",
+  "310": "Airbus A310",
+  "333": "Airbus A330-300",
+};
+
+// Approximate total seat capacity per aircraft type (UzAirways config)
+export const AIRCRAFT_CAPACITY_MAP: Record<string, number> = {
+  "320": 150,
+  "321": 180,
+  "32A": 150,
+  "32B": 180,
+  "32N": 165,
+  "32Q": 182,
+  "763": 240,
+  "764": 245,
+  "788": 270,
+  "789": 294,
+  "310": 200,
+  "333": 277,
 };
 
 export const UZ_CITY_MAP: Record<string, string> = {

@@ -5,6 +5,8 @@ import {
   fallbackUzDomesticCodes,
   getAirportNameFromMap,
   postFlights,
+  AIRCRAFT_NAME_MAP,
+  AIRCRAFT_CAPACITY_MAP,
 } from "@/lib/aerotur";
 
 export const runtime = "nodejs";
@@ -124,6 +126,29 @@ export async function GET(req: Request) {
       const UZ_DOMESTIC = new Set(["TAS","SKD","BHK","AZN","FEG","NMA","UGC","TMJ","KSQ","NVI","NCU"]);
       if (directCount === 0 && transitHubCode && !UZ_DOMESTIC.has(transitHubCode)) continue;
 
+      // Extract aircraft codes + available seats from direct variants (or transit if no direct)
+      const relevantVariants = directCount > 0 ? directVariants : transitVariants;
+      const aircraftCodes = [
+        ...new Set(
+          relevantVariants
+            .map((v) => v?.legs?.[0]?.segments?.[0]?.aircraft_type as string | undefined)
+            .filter((c): c is string => !!c)
+        ),
+      ];
+      const seatsAvailable = relevantVariants.reduce(
+        (sum, v) => sum + (typeof v?.seats === "number" ? v.seats : 0),
+        0
+      );
+
+      // Build human-readable aircraft label with capacity
+      const aircraftLabel = aircraftCodes
+        .map((code) => {
+          const name = AIRCRAFT_NAME_MAP[code] ?? `Aircraft ${code}`;
+          const cap = AIRCRAFT_CAPACITY_MAP[code];
+          return cap ? `${name} (~${cap} o'rindiq)` : name;
+        })
+        .join(", ");
+
       routes.push({
         from,
         to,
@@ -133,6 +158,9 @@ export async function GET(req: Request) {
         transitHubCode,
         transitHubName,
         transitCount,
+        aircraftCodes,
+        seatsAvailable,
+        aircraftLabel,
       });
     } catch {
       continue;
