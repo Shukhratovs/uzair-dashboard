@@ -39,7 +39,7 @@ export const AIRCRAFT_CAPACITY_MAP: Record<string, number> = {
   "321": 180,
   "32A": 150,
   "32B": 180,
-  "32N": 165,
+  "32N": 186, // UzAirways A320neo — 186 seats (standard one-class config, confirmed uzairways.com)
   "32Q": 182,
   "763": 240,
   "764": 245,
