@@ -1,28 +1,10 @@
 import { NextResponse } from "next/server";
 import ExcelJS from "exceljs";
+import { computeDailyData } from "@/lib/daily-logic";
+import { DailyResponse } from "@/lib/aerotur";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-type DailyResponse = {
-  date: string;
-  flightClass: string;
-  from: string;
-  fromName: string;
-  total: number;
-  routes: {
-    from: string;
-    to: string;
-    fromName: string;
-    toName: string;
-    count: number;
-    transitHubCode?: string;
-    transitHubName?: string;
-    transitCount?: number;
-    aircraftLabel?: string;
-  }[];
-  note?: string;
-};
 
 function generateDates(from: string, to: string): string[] {
   const dates: string[] = [];
@@ -100,18 +82,11 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Date range cannot exceed 30 days." }, { status: 400 });
   }
 
-  const origin = new URL(req.url).origin;
+  // Call computeDailyData directly (no internal HTTP) to preserve all fields including aircraftLabel
   const dailyResults: DailyResponse[] = [];
-
   for (const date of dates) {
-    const dailyUrl = new URL("/api/daily", origin);
-    dailyUrl.searchParams.set("date", date);
-    dailyUrl.searchParams.set("from", from);
-    dailyUrl.searchParams.set("class", flightClass);
-    const dailyRes = await fetch(dailyUrl.toString());
-    if (dailyRes.ok) {
-      dailyResults.push((await dailyRes.json()) as DailyResponse);
-    }
+    const result = await computeDailyData({ date, from, flightClass });
+    dailyResults.push(result);
   }
 
   const wb = new ExcelJS.Workbook();
