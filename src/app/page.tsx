@@ -258,8 +258,7 @@ function DayCard({ dayData }: { dayData: DailyResponse }) {
               <th className="border-b border-neutral-200 py-2 pr-3">Reyslar soni</th>
               <th className="border-b border-neutral-200 py-2 pr-3">Tranzit hududi</th>
               <th className="border-b border-neutral-200 py-2 pr-3">Tranzit soni</th>
-              <th className="border-b border-neutral-200 py-2 pr-3">Samolyot</th>
-              <th className="border-b border-neutral-200 py-2">Mavjud o'rindiq</th>
+              <th className="border-b border-neutral-200 py-2">Samolyot</th>
             </tr>
           </thead>
           <tbody>
@@ -269,13 +268,12 @@ function DayCard({ dayData }: { dayData: DailyResponse }) {
                 <td className="border-b border-neutral-100 py-2 pr-3">{r.count}</td>
                 <td className="border-b border-neutral-100 py-2 pr-3">{r.transitHubName ?? ""}</td>
                 <td className="border-b border-neutral-100 py-2 pr-3">{r.transitCount ?? ""}</td>
-                <td className="border-b border-neutral-100 py-2 pr-3 text-xs">{r.aircraftLabel ?? ""}</td>
-                <td className="border-b border-neutral-100 py-2 text-center">{r.seatsAvailable ?? ""}</td>
+                <td className="border-b border-neutral-100 py-2 text-xs">{r.aircraftLabel ?? ""}</td>
               </tr>
             ))}
             {dayData.routes.length === 0 && (
               <tr>
-                <td className="py-4 text-sm text-neutral-500" colSpan={4}>
+                <td className="py-4 text-sm text-neutral-500" colSpan={5}>
                   Bu kunda ichki reys topilmadi.
                 </td>
               </tr>

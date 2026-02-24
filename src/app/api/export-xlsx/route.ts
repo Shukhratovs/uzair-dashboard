@@ -20,7 +20,6 @@ type DailyResponse = {
     transitHubName?: string;
     transitCount?: number;
     aircraftLabel?: string;
-    seatsAvailable?: number;
   }[];
   note?: string;
 };
@@ -123,14 +122,12 @@ export async function GET(req: Request) {
   ws.getColumn(3).width = 22;
   ws.getColumn(4).width = 14;
   ws.getColumn(5).width = 28;
-  ws.getColumn(6).width = 16;
 
   // Column headers
   ws.mergeCells("A3:A4");
   ws.mergeCells("B3:B4");
   ws.mergeCells("C3:D3");
   ws.mergeCells("E3:E4");
-  ws.mergeCells("F3:F4");
 
   ws.getCell("A3").value = "Yo'nalish";
   ws.getCell("B3").value = "Reyslar soni";
@@ -138,9 +135,8 @@ export async function GET(req: Request) {
   ws.getCell("C4").value = "Tranzit hududi";
   ws.getCell("D4").value = "Tranzit soni";
   ws.getCell("E3").value = "Samolyot";
-  ws.getCell("F3").value = "Mavjud o'rindiq";
 
-  ["A3", "B3", "C3", "C4", "D4", "E3", "F3"].forEach((a) => headerCell(ws.getCell(a)));
+  ["A3", "B3", "C3", "C4", "D4", "E3"].forEach((a) => headerCell(ws.getCell(a)));
 
   // Grand total row
   const grandTotal = dailyResults.reduce((s, d) => s + d.total, 0);
@@ -186,11 +182,6 @@ export async function GET(req: Request) {
         ws.getCell(`E${r}`).value = row.aircraftLabel;
       }
       cellBox(ws.getCell(`E${r}`));
-
-      if (row.seatsAvailable) {
-        ws.getCell(`F${r}`).value = row.seatsAvailable;
-      }
-      cellBox(ws.getCell(`F${r}`), { center: true });
 
       r++;
     }
